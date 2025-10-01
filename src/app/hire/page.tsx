@@ -1,1 +1,3 @@
-﻿export default function Hire(){return(<main className="max-w-3xl mx-auto px-4 py-12"><h1 className="font-h text-4xl">One-Week Demo (founder-to-founder)</h1><p className="mt-4 text-zinc-600">See a working prototype before you commit to a retainer.</p></main>);}
+﻿import SiteMockup from "@/components/SiteMockup";
+export const dynamic = "force-static";
+export default function Hire(){ return <SiteMockup />; }
