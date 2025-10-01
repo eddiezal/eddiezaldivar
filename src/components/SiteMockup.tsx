@@ -110,10 +110,10 @@ export default function SiteMockup() {
         <div className="mx-auto max-w-6xl px-4 py-3 flex items-center justify-between">
           <div className={`tracking-tight ${brandHeading} text-xl`}>eddiezaldivar<span className="text-zinc-400">.com</span></div>
           <nav className="hidden md:flex items-center gap-6 text-sm text-zinc-600 dark:text-zinc-300" aria-label="Primary">
-            <a href="#work" className="hover:text-zinc-900 dark:hover:text-zinc-100">Work</a>
-            <a href="#essays" className="hover:text-zinc-900 dark:hover:text-zinc-100">Essays</a>
-            <a href="#about" className="hover:text-zinc-900 dark:hover:text-zinc-100">About</a>
-            <a href="#contact" className="hover:text-zinc-900 dark:hover:text-zinc-100">Contact</a>
+            <a href="/work" className="hover:text-zinc-900 dark:hover:text-zinc-100">Work</a>
+            <a href="/essays" className="hover:text-zinc-900 dark:hover:text-zinc-100">Essays</a>
+            <a href="/about" className="hover:text-zinc-900 dark:hover:text-zinc-100">About</a>
+            <a href="/contact" className="hover:text-zinc-900 dark:hover:text-zinc-100">Contact</a>
             <button onClick={handleBookingClick} className="rounded-full bg-zinc-900 dark:bg-zinc-100 text-white dark:text-zinc-900 px-4 py-2 font-medium">Hire My Team</button>
           </nav>
         </div>
@@ -140,7 +140,7 @@ export default function SiteMockup() {
               <button onClick={handleBookingClick} className="rounded-xl px-5 py-3 font-semibold text-white bg-gradient-to-r from-emerald-600 to-teal-500 shadow-[0_6px_20px_-6px_rgba(16,185,129,0.5)]">
                 Book a 15-min fit check
               </button>
-              <a href="#work" className="rounded-xl border border-zinc-300 dark:border-zinc-700 px-5 py-3 font-semibold hover:bg-[rgba(139,117,112,0.08)]">
+              <a href="/work" className="rounded-xl border border-zinc-300 dark:border-zinc-700 px-5 py-3 font-semibold hover:bg-[rgba(139,117,112,0.08)]">
                 See recent work
               </a>
             </div>
@@ -232,7 +232,7 @@ const quicklift = async (funnel) => {
             <p className="text-zinc-600 dark:text-zinc-300">Founder-led builder with 8+ years across growth, AI, and clean web execution. I help small teams ship faster: proof first, polish second.</p>
             <div className="mt-6 flex gap-3">
               <button onClick={handleBookingClick} className="rounded-xl px-5 py-3 font-semibold text-white bg-gradient-to-r from-emerald-600 to-teal-500">Hire my team</button>
-              <a href="#essays" className="rounded-xl border border-zinc-300 dark:border-zinc-700 px-5 py-3 font-semibold hover:bg-[rgba(139,117,112,0.08)]">Read essays</a>
+              <a href="/essays" className="rounded-xl border border-zinc-300 dark:border-zinc-700 px-5 py-3 font-semibold hover:bg-[rgba(139,117,112,0.08)]">Read essays</a>
             </div>
           </div>
           <div className="hidden md:block" aria-hidden="true">
@@ -310,3 +310,4 @@ const quicklift = async (funnel) => {
     </main>
   );
 }
+
