@@ -2,16 +2,15 @@
 import React, { useState, useMemo, useCallback, useEffect, useRef } from "react";
 
 /* ---------------------------------
-   Brand Fonts (mock): Playfair/Nunito
-   (In production: load via @next/font or <link>)
+   Brand fonts from next/font variables
 ----------------------------------*/
-const brandHeading = "font-[PlayfairDisplay]";
-const brandBody = "font-[Nunito]";
+const brandHeading = "font-[var(--font-playfair)]";
+const brandBody    = "font-[var(--font-nunito)]";
 
 /* -----------------------
    Small Utilities
 ------------------------*/
-const useInView = () => {
+function useInView() {
   const ref = useRef<HTMLElement | null>(null);
   const [inView, setInView] = useState(false);
   useEffect(() => {
@@ -22,15 +21,16 @@ const useInView = () => {
     return () => io.disconnect();
   }, []);
   return { ref, inView };
-};
+}
 
-const AnimatedCounter = ({ to = 100, duration = 900, suffix = "" }) => {
+type AnimatedCounterProps = { to?: number; duration?: number; suffix?: string };
+const AnimatedCounter: React.FC<AnimatedCounterProps> = ({ to = 100, duration = 900, suffix = "" }) => {
   const { ref, inView } = useInView();
   const [val, setVal] = useState(0);
   useEffect(() => {
     if (!inView) return;
     let start: number | undefined;
-    const from = 0; const diff = to - from;
+    const from = 0, diff = to - from;
     const step = (t: number) => {
       if (!start) start = t;
       const p = Math.min((t - start) / duration, 1);
@@ -46,7 +46,8 @@ const AnimatedCounter = ({ to = 100, duration = 900, suffix = "" }) => {
 /* -----------------------
    Reusable UI Components
 ------------------------*/
-const CaseCard = ({ tag, title, metric, index = 0 }) => (
+type CaseCardProps = { tag: string; title: string; metric: string; index?: number };
+const CaseCard: React.FC<CaseCardProps> = ({ tag, title, metric, index = 0 }) => (
   <div
     className={
       "relative rounded-2xl p-[1px] bg-gradient-to-br from-zinc-200/80 via-transparent to-zinc-200/80 " +
@@ -68,7 +69,8 @@ const CaseCard = ({ tag, title, metric, index = 0 }) => (
   </div>
 );
 
-const Metric = ({ label, valueNum, valueText }) => (
+type MetricProps = { label: string; valueNum?: number; valueText?: string };
+const Metric: React.FC<MetricProps> = ({ label, valueNum, valueText }) => (
   <div className="flex flex-col items-start gap-1">
     <div className={`text-3xl md:text-4xl font-bold text-zinc-900 dark:text-zinc-100 ${brandBody}`}>
       {typeof valueNum === "number" ? <AnimatedCounter to={valueNum} /> : valueText}
@@ -84,16 +86,23 @@ export default function SiteMockup() {
   const [showBooking, setShowBooking] = useState(false);
   const [formData, setFormData] = useState({ name: "", email: "", message: "" });
 
-  const demoSteps = useMemo(() => [
-    { title: "Day 1 — Map & Mock", body: "30-min discovery → one clean booking/lead path; rough metrics stub." },
-    { title: "Day 2 — Build & Connect", body: "Ship page + form/bot, tie into CRM, notifications, basic analytics." },
-    { title: "Day 3 — Prove & Polish", body: "Test traffic, instrument metrics, 90-sec Loom walkthrough." },
-  ], []);
-  const services = useMemo(() => [
-    { title: "Funnels", blurb: "Offer clarity, capture forms, booking flows, bilingual where needed." },
-    { title: "Automations", blurb: "Reminders, autoresponders, triage bots, CRM hooks." },
-    { title: "Analytics", blurb: "Plausible dashboards that show views → bookings → attended." },
-  ], []);
+  const demoSteps = useMemo(
+    () => [
+      { title: "Day 1 — Map & Mock", body: "30-min discovery → one clean booking/lead path; rough metrics stub." },
+      { title: "Day 2 — Build & Connect", body: "Ship page + form/bot, tie into CRM, notifications, basic analytics." },
+      { title: "Day 3 — Prove & Polish", body: "Test traffic, instrument metrics, 90-sec Loom walkthrough." },
+    ],
+    []
+  );
+
+  const services = useMemo(
+    () => [
+      { title: "Funnels", blurb: "Offer clarity, capture forms, booking flows, bilingual where needed." },
+      { title: "Automations", blurb: "Reminders, autoresponders, triage bots, CRM hooks." },
+      { title: "Analytics", blurb: "Plausible dashboards that show views → bookings → attended." },
+    ],
+    []
+  );
 
   const handleBookingClick = useCallback(() => setShowBooking(true), []);
   const handleCloseModal  = useCallback(() => setShowBooking(false), []);
@@ -105,7 +114,7 @@ export default function SiteMockup() {
 
   return (
     <main className={`min-h-screen bg-white dark:bg-zinc-950 text-zinc-900 dark:text-zinc-50 ${brandBody}`}>
-      {/* ——— Nav ——— */}
+      {/* Nav */}
       <header className="sticky top-0 z-30 backdrop-blur-xl bg-white/80 dark:bg-zinc-950/80 shadow-[0_1px_0_0_rgba(0,0,0,0.06)] border-b border-white/20 dark:border-white/10">
         <div className="mx-auto max-w-6xl px-4 py-3 flex items-center justify-between">
           <div className={`tracking-tight ${brandHeading} text-xl`}>eddiezaldivar<span className="text-zinc-400">.com</span></div>
@@ -119,7 +128,7 @@ export default function SiteMockup() {
         </div>
       </header>
 
-      {/* ——— Hero ——— */}
+      {/* Hero */}
       <section className="mx-auto max-w-6xl px-4 pt-16 pb-10">
         <div className="grid md:grid-cols-2 gap-10 items-center">
           <div>
@@ -129,6 +138,7 @@ export default function SiteMockup() {
             <p className="mt-4 text-lg text-zinc-600 dark:text-zinc-300">
               72-Hour Demo, founder-to-founder. Funnels, automations, and analytics shipped in days—not quarters.
             </p>
+
             <div className="mt-5 inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-emerald-50 text-emerald-800 text-sm border border-emerald-200">
               <span className="relative flex h-2 w-2">
                 <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
@@ -136,6 +146,7 @@ export default function SiteMockup() {
               </span>
               Taking 2 new clients this month
             </div>
+
             <div className="mt-6 flex flex-wrap gap-3">
               <button onClick={handleBookingClick} className="rounded-xl px-5 py-3 font-semibold text-white bg-gradient-to-r from-emerald-600 to-teal-500 shadow-[0_6px_20px_-6px_rgba(16,185,129,0.5)]">
                 Book a 15-min fit check
@@ -144,12 +155,14 @@ export default function SiteMockup() {
                 See recent work
               </a>
             </div>
+
             <div className="mt-8 grid grid-cols-2 sm:grid-cols-4 gap-6" role="list" aria-label="Outcome metrics">
               <Metric label="Lead capture lift" valueNum={30} valueText={"+12–30%"} />
               <Metric label="No-shows reduced" valueNum={45} valueText={"25–45%"} />
               <Metric label="Response time (min)" valueNum={10} />
               <Metric label="Time to live (hrs)" valueNum={72} />
             </div>
+
             <div className="flex items-center mt-4">
               <div className="flex -space-x-2">
                 {[...Array(3)].map((_, i) => (
@@ -177,7 +190,7 @@ const quicklift = async (funnel) => {
         </div>
       </section>
 
-      {/* ——— 72-Hour Demo ——— */}
+      {/* 72-Hour Demo */}
       <section className="border-y border-zinc-100 dark:border-zinc-800" style={{ backgroundColor: '#F7F5F4' }}>
         <div className="mx-auto max-w-6xl px-4 py-12">
           <h2 className={`text-2xl font-bold mb-6 ${brandHeading}`}>See it before you buy it — the 72-Hour Demo</h2>
@@ -197,7 +210,7 @@ const quicklift = async (funnel) => {
         </div>
       </section>
 
-      {/* ——— Services ——— */}
+      {/* Services */}
       <section className="mx-auto max-w-6xl px-4 py-12">
         <h2 className={`text-2xl font-bold mb-6 ${brandHeading}`}>What I build (fast)</h2>
         <div className="grid sm:grid-cols-2 md:grid-cols-3 gap-6" role="list" aria-label="Services">
@@ -210,7 +223,7 @@ const quicklift = async (funnel) => {
         </div>
       </section>
 
-      {/* ——— Caselets ——— */}
+      {/* Caselets */}
       <section id="work" className="border-y border-zinc-100 dark:border-zinc-800" style={{ backgroundColor: '#F2F4F5' }}>
         <div className="mx-auto max-w-6xl px-4 py-12">
           <div className="flex items-end justify-between mb-6">
@@ -224,7 +237,7 @@ const quicklift = async (funnel) => {
         </div>
       </section>
 
-      {/* ——— About ——— */}
+      {/* About */}
       <section id="about" className="mx-auto max-w-6xl px-4 py-12">
         <div className="grid md:grid-cols-3 gap-8 items-center">
           <div className="md:col-span-2">
@@ -241,7 +254,7 @@ const quicklift = async (funnel) => {
         </div>
       </section>
 
-      {/* ——— Newsletter ——— */}
+      {/* Newsletter */}
       <section className="bg-white dark:bg-zinc-950">
         <div className="mx-auto max-w-6xl px-4 py-12 rounded-2xl">
           <div className="relative rounded-2xl p-[1px] bg-gradient-to-br from-zinc-200/80 via-transparent to-zinc-200/80">
@@ -258,7 +271,7 @@ const quicklift = async (funnel) => {
         </div>
       </section>
 
-      {/* ——— Contact + Footer ——— */}
+      {/* Contact + Footer */}
       <section id="contact" className="mx-auto max-w-6xl px-4 py-12">
         <div className="grid md:grid-cols-2 gap-6 items-start">
           <div>
@@ -306,9 +319,9 @@ const quicklift = async (funnel) => {
         </div>
       )}
 
-      <style jsx>{`@keyframes fadeUp { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: translateY(0); } }`}</style>
+      <style jsx>{`
+        @keyframes fadeUp { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: translateY(0); } }
+      `}</style>
     </main>
   );
 }
-
-
