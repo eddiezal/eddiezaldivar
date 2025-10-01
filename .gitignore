@@ -1,0 +1,31 @@
+﻿# Node / Next
+node_modules/
+.next/
+out/
+dist/
+coverage/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+*.log
+
+# Env & local
+.env
+.env.*
+!.env.example
+
+# IDE/editor
+.vscode/
+.idea/
+*.swp
+.DS_Store
+Thumbs.db
+
+# Next/hosting
+.vercel/
+.netlify/
+
+# Misc
+public/.bundle/
+scripts/*.local.*
