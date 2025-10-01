@@ -24,3 +24,5 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     </html>
   );
 }
+export const metadataBase = new URL("https://www.eddiezaldivar.com");
+export const viewport = { width: "device-width", initialScale: 1, themeColor: "#0F172A" };
