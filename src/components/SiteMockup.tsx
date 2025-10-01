@@ -299,8 +299,8 @@ const quicklift = async (funnel) => {
         <footer className="mt-12 py-8 border-t border-zinc-100 dark:border-zinc-900 text-sm text-zinc-500 flex flex-col md:flex-row items-center justify-between gap-3">
           <div>© {new Date().getFullYear()} Eddie Zaldivar • All rights reserved</div>
           <div className="flex items-center gap-4">
-            <a href="#" className="hover:text-zinc-700 dark:hover:text-zinc-300">Privacy</a>
-            <a href="#" className="hover:text-zinc-700 dark:hover:text-zinc-300">Terms</a>
+            <a href="/privacy" className="hover:text-zinc-700 dark:hover:text-zinc-300">Privacy</a>
+            <a href="/terms" className="hover:text-zinc-700 dark:hover:text-zinc-300">Terms</a>
           </div>
         </footer>
       </section>
@@ -325,5 +325,6 @@ const quicklift = async (funnel) => {
     </main>
   );
 }
+
 
 
