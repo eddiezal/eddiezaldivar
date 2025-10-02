@@ -1,6 +1,381 @@
-﻿"use client";
+﻿# NotebookLM Record — eddiezaldivar.com
+
+This single file concatenates the relevant source files in **path order** with
+clear separators. Use it as the canonical NotebookLM source for planning, PRD,
+and design discussions.
+
+## What’s inside (in order)
+- \package.json\
+- \
+ext.config.mjs\
+- \	ailwind.config.ts\
+- \	sconfig.json\
+- \src/app/layout.tsx\
+- \src/app/fonts.ts\
+- \src/app/page.tsx\
+- \src/app/work/page.tsx\
+- \src/app/essays/page.tsx\
+- \src/app/essays/one-week-demo/page.mdx\
+- \src/app/about/page.tsx\
+- \src/app/contact/page.tsx\
+- \src/app/privacy/page.tsx\
+- \src/app/terms/page.tsx\
+- \src/app/robots.ts\
+- \src/app/sitemap.ts\
+- \src/components/SiteMockup.tsx\
+- \src/mdx-components.tsx\
+- \scripts/extract-home-bundle.mjs\
+
+## Current guardrails / decisions
+- **Home bundle budget:** ~54 KB brotlied (cap ≤ 200 KB gz set by Size Limit).
+- **/essays/** routes: server-rendered MDX, no "use client".
+- **Brand tokens:** Tailwind colors (midnight, taupe, warm, skysoft, mist); fonts via next/font (Playfair Display / Nunito).
+- **Analytics:** Plausible via \<Script defer …/script.js>\ in \layout.tsx\.
+- **SEO:** App Router \obots.ts\ and \sitemap.ts\ generated at build.
+
+Generated: 2025-10-01 17:56:47
+
+
+==================== FILE: package.json ====================
+
+{
+    "dependencies": {
+        "@mdx-js/loader": "^3.1.1",
+        "@mdx-js/react": "^3.1.1",
+        "next": "^15.5.4",
+        "react": "^18.3.1",
+        "react-dom": "^18.3.1"
+    },
+    "devDependencies": {
+        "@next/bundle-analyzer": "^15.5.4",
+        "@next/mdx": "^15.5.4",
+        "@size-limit/file": "^11.2.0",
+        "@tailwindcss/postcss": "^4.1.14",
+        "@tailwindcss/typography": "^0.5.19",
+        "@types/node": "^24.6.1",
+        "@types/react": "^19.1.17",
+        "autoprefixer": "^10.4.21",
+        "postcss": "^8.5.6",
+        "size-limit": "^11.2.0",
+        "tailwindcss": "^4.1.14",
+        "typescript": "^5.9.3"
+    },
+    "scripts": {
+        "analyze": "ANALYZE=true next build",
+        "lint": "next lint",
+        "build": "next build",
+        "dev": "next dev",
+        "start": "next start",
+        "postbuild": "node scripts/extract-home-bundle.mjs",
+        "size": "size-limit"
+    }
+}
+
+
+
+==================== FILE: next.config.mjs ====================
+
+import createMDX from "@next/mdx";
+
+/** @type {import("next").NextConfig} */
+const withMDX = createMDX({
+  extension: /\.mdx?$/,
+});
+
+export default withMDX({
+  // Treat MDX as a first-class page/route extension
+  pageExtensions: ["ts", "tsx", "mdx"],
+  experimental: { mdxRs: true } // keep this since you’re on Next 15.x
+});
+
+
+
+==================== FILE: tailwind.config.ts ====================
+
+import type { Config } from "tailwindcss";
+export default {
+  darkMode: "class",
+  content: ["./src/**/*.{ts,tsx,mdx}","./app/**/*.{ts,tsx,mdx}"],
+  theme: {
+    extend: {
+      colors: {
+        midnight: "#0F172A", // Midnight Navy
+        taupe:    "#8B7570", // Taupe Clay
+        warm:     "#F7F5F4", // Warm White
+        skysoft:  "#B8CDD9", // Soft Sky
+        mist:     "#E5E7EB", // Mist Gray
+      },
+      borderRadius: { "2xl": "1rem" },
+      boxShadow: { soft: "0 6px 20px -6px rgba(16,185,129,0.30)" }
+    }
+  },
+  plugins: []
+} satisfies Config;
+
+
+
+==================== FILE: tsconfig.json ====================
+
+{
+  "compilerOptions": {
+    "target": "ES2022",
+    "lib": [
+      "ES2023",
+      "DOM",
+      "DOM.Iterable"
+    ],
+    "module": "ESNext",
+    "moduleResolution": "Bundler",
+    "jsx": "preserve",
+    "allowJs": true,
+    "skipLibCheck": true,
+    "strict": true,
+    "noEmit": true,
+    "esModuleInterop": true,
+    "forceConsistentCasingInFileNames": true,
+    "baseUrl": ".",
+    "paths": {
+      "@/*": [
+        "src/*"
+      ]
+    },
+    "incremental": true,
+    "resolveJsonModule": true,
+    "isolatedModules": true,
+    "plugins": [
+      {
+        "name": "next"
+      }
+    ]
+  },
+  "include": [
+    "next-env.d.ts",
+    "**/*.ts",
+    "**/*.tsx",
+    ".next/types/**/*.ts"
+  ],
+  "exclude": [
+    "node_modules"
+  ]
+}
+
+
+
+==================== FILE: src\app\layout.tsx ====================
+
+import "./globals.css";
+import type { Metadata, Viewport } from "next";
+import Script from "next/script";
+import { playfair, nunito } from "./fonts";
+
+export const metadata: Metadata = {
+  metadataBase: new URL("https://www.eddiezaldivar.com"),
+  title: "eddiezaldivar.com",
+  description: "Fractional growth & AI",
+  openGraph: {
+    title: "eddiezaldivar.com",
+    description: "Fractional growth & AI",
+    url: "https://www.eddiezaldivar.com",
+    siteName: "eddiezaldivar.com",
+  },
+  alternates: { canonical: "/" },
+};
+
+export const viewport: Viewport = {
+  width: "device-width",
+  initialScale: 1,
+  themeColor: "#0F172A",
+};
+
+export default function RootLayout({ children }: { children: React.ReactNode }) {
+  return (
+    <html lang="en" className="h-full">
+      <head>
+        <Script
+          defer
+          data-domain="eddiezaldivar.com"
+          src="https://plausible.io/js/script.js"
+        />
+      </head>
+      <body className={`${playfair.variable} ${nunito.variable} min-h-dvh bg-white text-zinc-900 antialiased`}>
+        {children}
+      </body>
+    </html>
+  );
+}
+
+
+
+==================== FILE: src\app\fonts.ts ====================
+
+import { Playfair_Display, Nunito } from "next/font/google";
+
+export const playfair = Playfair_Display({
+  subsets: ["latin"],
+  variable: "--font-playfair",
+  display: "swap",
+});
+export const nunito = Nunito({
+  subsets: ["latin"],
+  variable: "--font-nunito",
+  display: "swap",
+});
+
+
+
+==================== FILE: src\app\page.tsx ====================
+
+import SiteMockup from "@/components/SiteMockup";
+import type { Metadata } from "next";
+export const metadata: Metadata = {
+  title: "Fractional Growth & AI — Eddie Zaldivar",
+  description: "72-Hour Demo. Funnels, automations, analytics shipped in days—not quarters.",
+  openGraph: { title: "Fractional Growth & AI — Eddie Zaldivar", description: "See a working demo before you buy it." }
+};
+export const dynamic = "force-static";
+export default function Home(){ return <SiteMockup />; }
+
+
+
+==================== FILE: src\app\work\page.tsx ====================
+
+export const metadata = {
+  title: "Recent Work — Eddie Zaldivar",
+  description: "Funnels, automations, analytics shipped fast.",
+};
+export const dynamic = "force-static";
+
+const items = [
+  { tag: "funnel • automation", title: "Booking flow + reminders", metric: "No-shows −42%, bookings +19%" },
+  { tag: "AI bot • ops",        title: "FAQ bot + triage",        metric: "Support emails −35%, site→booking +12%" },
+];
+
+export default function Work(){
+  return (
+    <main className="max-w-6xl mx-auto px-4 py-12">
+      <h1 className="font-playfair text-3xl mb-6">Recent Work</h1>
+      <div className="grid md:grid-cols-2 gap-6">
+        {items.map((c,i)=>(
+          <div key={i} className="rounded-2xl border border-zinc-200 dark:border-zinc-800 p-5">
+            <div className="text-[10px] uppercase tracking-[0.18em] text-zinc-500 mb-2">{c.tag}</div>
+            <div className="font-semibold mb-1">{c.title}</div>
+            <div className="text-emerald-700 dark:text-emerald-400 text-sm">{c.metric}</div>
+          </div>
+        ))}
+      </div>
+    </main>
+  );
+}
+
+
+
+==================== FILE: src\app\essays\page.tsx ====================
+
+export const metadata = {
+  title: "Essays — Eddie Zaldivar",
+  description: "Clean, fast, JS-free reading."
+};
+export const dynamic = "force-static";
+export default function Essays(){return(<main className="prose prose-zinc max-w-3xl mx-auto px-4 py-12"><h1 className="font-playfair">Essays</h1><p>No client-side JS here.</p></main>);}
+
+
+
+==================== FILE: src\app\essays\one-week-demo\page.mdx ====================
+
+export const metadata = {
+  title: "The One-Week Demo: Why Speed Closes Deals",
+  description: "Ship a working prototype and a Proof Dashboard in a week."
+}
+
+# The One-Week Demo
+
+Speed is a feature. Proof beats promises.
+
+
+
+==================== FILE: src\app\about\page.tsx ====================
+
+export const metadata = { title: "About — Eddie Zaldivar", description: "Founder-led builder. Proof first, polish second." };
+export default function About(){return(<main className="max-w-3xl mx-auto px-4 py-12"><h1 className="font-playfair text-3xl">About</h1></main>);}
+
+
+
+==================== FILE: src\app\contact\page.tsx ====================
+
+export const metadata = { title: "Contact — Eddie Zaldivar", description: "Email eddie@zaldivarand.co or use the form." };
+export default function Contact(){return(<main className="max-w-3xl mx-auto px-4 py-12"><h1 className="font-playfair text-3xl">Contact</h1></main>);}
+
+
+
+==================== FILE: src\app\privacy\page.tsx ====================
+
+export const metadata = { title: "Privacy Policy — Eddie Zaldivar", description: "How we handle data." };
+export default function Privacy(){return(<main className="max-w-3xl mx-auto px-4 py-12"><h1 className="font-playfair text-3xl">Privacy</h1></main>);}
+
+
+
+==================== FILE: src\app\terms\page.tsx ====================
+
+export const metadata = { title: "Terms — Eddie Zaldivar", description: "Terms and conditions." };
+export default function Terms(){return(<main className="max-w-3xl mx-auto px-4 py-12"><h1 className="font-playfair text-3xl">Terms</h1></main>);}
+
+
+
+==================== FILE: src\app\robots.ts ====================
+
+import type { MetadataRoute } from "next";
+
+const site = "https://www.eddiezaldivar.com";
+
+export default function robots(): MetadataRoute.Robots {
+  return {
+    rules: [
+      {
+        userAgent: "*",
+        allow: "/",
+        disallow: ["/drafts"],
+      },
+    ],
+    sitemap: `${site}/sitemap.xml`,
+  };
+}
+
+
+
+==================== FILE: src\app\sitemap.ts ====================
+
+import type { MetadataRoute } from "next";
+
+const site = "https://www.eddiezaldivar.com";
+
+// If you add new top-level pages, include them here.
+const routes = [
+  "",           // /
+  "work",
+  "essays",
+  "hire",
+  "about",
+  "contact",
+  "privacy",
+  "terms",
+];
+
+export default function sitemap(): MetadataRoute.Sitemap {
+  const now = new Date();
+  return routes.map((path) => ({
+    url: `${site}/${path}`.replace(/\/$/, ""), // tidy double slashes
+    lastModified: now,
+    changeFrequency: path ? "weekly" : "daily",
+    priority: path ? 0.7 : 1.0,
+  }));
+}
+
+
+
+==================== FILE: src\components\SiteMockup.tsx ====================
+
+"use client";
 import React, { useState, useMemo, useCallback, useEffect, useRef } from "react";
-import { createPortal } from "react-dom";
 
 /* ---------------------------------
    Brand fonts from next/font variables
@@ -81,53 +456,10 @@ const Metric: React.FC<MetricProps> = ({ label, valueNum, valueText }) => (
 );
 
 /* -----------------------
-   Modal Portal (always mounted, safe hidden state)
-------------------------*/
-const ModalLayer: React.FC<{
-  open: boolean;
-  onClose: () => void;
-  children: React.ReactNode;
-}> = ({ open, onClose, children }) => {
-  const [mounted, setMounted] = useState(false);
-  useEffect(() => setMounted(true), []);
-
-  // Esc to close
-  useEffect(() => {
-    if (!open) return;
-    const onKey = (e: KeyboardEvent) => (e.key === "Escape" ? onClose() : undefined);
-    window.addEventListener("keydown", onKey);
-    return () => window.removeEventListener("keydown", onKey);
-  }, [open, onClose]);
-
-  // Scroll lock
-  useEffect(() => {
-    if (!open) return;
-    const prev = document.documentElement.style.overflow;
-    document.documentElement.style.overflow = "hidden";
-    return () => { document.documentElement.style.overflow = prev; };
-  }, [open]);
-
-  if (!mounted) return null;
-
-  return createPortal(
-    <div
-      aria-hidden={!open}
-      className="fixed inset-0 z-[9999] flex items-center justify-center p-4 transition-opacity duration-150"
-      style={{ opacity: open ? 1 : 0, pointerEvents: open ? "auto" : "none", background: "rgba(0,0,0,.5)" }}
-      onClick={(e) => { if (e.target === e.currentTarget) onClose(); }}
-    >
-      {children}
-    </div>,
-    document.body
-  );
-};
-
-/* -----------------------
    Page Mockup Component
 ------------------------*/
 export default function SiteMockup() {
-  const [open, setOpen] = useState(false);
-  const [calendlyLoaded, setCalendlyLoaded] = useState(false);
+  const [showBooking, setShowBooking] = useState(false);
   const [formData, setFormData] = useState({ name: "", email: "", message: "" });
 
   const demoSteps = useMemo(
@@ -148,48 +480,18 @@ export default function SiteMockup() {
     []
   );
 
-  const handleBookingClick = useCallback(() => setOpen(true), []);
-  const handleCloseModal  = useCallback(() => setOpen(false), []);
-
-  // Lazy-load Calendly when requested
-  const handleLoadCalendly = useCallback(() => {
-    if (calendlyLoaded) return;
-    const existing = document.querySelector('script[data-calendly="widget"]') as HTMLScriptElement | null;
-    if (existing) { setCalendlyLoaded(true); return; }
-    const s = document.createElement("script");
-    s.src = "https://assets.calendly.com/assets/external/widget.js";
-    s.async = true;
-    s.setAttribute("data-calendly", "widget");
-    s.onload = () => setCalendlyLoaded(true);
-    document.body.appendChild(s);
-  }, [calendlyLoaded]);
-
+  const handleBookingClick = useCallback(() => { try { (window as any).plausible?.("open_fit_check"); } catch {} setShowBooking(true); }, []);
+  const handleCloseModal  = useCallback(() => setShowBooking(false), []);
   const handleInputChange = useCallback((e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
   }, []);
   const handleSubmit = useCallback((e: React.FormEvent) => e.preventDefault(), []);
 
-  // Newsletter submit → redirect to /thanks (and optionally fire Plausible)
-  const handleNewsletter = useCallback((e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    const emailInput = e.currentTarget.elements.namedItem("newsletter") as HTMLInputElement | null;
-    const email = emailInput?.value?.trim() || "";
-    console.log("[Newsletter] submit", email);
-
-    try {
-      (window as any).plausible?.("leadmagnet_download", {
-        props: { asset: "Funnel Health Check v1" }
-      });
-    } catch {}
-
-    window.location.href = "/thanks";
-  }, []);
-
   return (
     <main className={`min-h-screen bg-white dark:bg-zinc-950 text-zinc-900 dark:text-zinc-50 ${brandBody}`}>
       {/* Nav */}
-      <header className="sticky top-0 z-[100] backdrop-blur-xl bg-white/80 dark:bg-zinc-950/80 shadow-[0_1px_0_0_rgba(0,0,0,0.06)] border-b border-white/20 dark:border-white/10">
+      <header className="sticky top-0 z-30 backdrop-blur-xl bg-white/80 dark:bg-zinc-950/80 shadow-[0_1px_0_0_rgba(0,0,0,0.06)] border-b border-white/20 dark:border-white/10">
         <div className="mx-auto max-w-6xl px-4 py-3 flex items-center justify-between">
           <div className={`tracking-tight ${brandHeading} text-xl`}>eddiezaldivar<span className="text-zinc-400">.com</span></div>
           <nav className="hidden md:flex items-center gap-6 text-sm text-zinc-600 dark:text-zinc-300" aria-label="Primary">
@@ -212,6 +514,14 @@ export default function SiteMockup() {
             <p className="mt-4 text-lg text-zinc-600 dark:text-zinc-300">
               72-Hour Demo, founder-to-founder. Funnels, automations, and analytics shipped in days—not quarters.
             </p>
+
+            <div className="mt-5 inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-emerald-50 text-emerald-800 text-sm border border-emerald-200">
+              <span className="relative flex h-2 w-2">
+                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+                <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
+              </span>
+              Taking 2 new clients this month
+            </div>
 
             <div className="mt-6 flex flex-wrap gap-3">
               <button onClick={handleBookingClick} className="rounded-xl px-5 py-3 font-semibold text-white bg-gradient-to-r from-emerald-600 to-teal-500 shadow-[0_6px_20px_-6px_rgba(16,185,129,0.5)]">
@@ -294,7 +604,7 @@ const quicklift = async (funnel) => {
         <div className="mx-auto max-w-6xl px-4 py-12">
           <div className="flex items-end justify-between mb-6">
             <h2 className={`text-2xl font-bold ${brandHeading}`}>Recent work</h2>
-            <a href="/work" className="text-sm text-zinc-600 dark:text-zinc-300 hover:underline">View all →</a>
+            <a href="#" className="text-sm text-zinc-600 dark:text-zinc-300 hover:underline">View all →</a>
           </div>
           <div className="grid md:grid-cols-2 gap-6">
             <CaseCard index={0} tag="funnel • automation" title="Booking flow + reminders" metric="No-shows −42%, bookings +19%" />
@@ -327,19 +637,10 @@ const quicklift = async (funnel) => {
             <div className="rounded-2xl border border-zinc-200 dark:border-zinc-800 p-6 md:p-8 bg-white dark:bg-zinc-950">
               <h3 className={`text-xl font-semibold ${brandHeading}`}>Founder Notes (biweekly)</h3>
               <p className="text-sm text-zinc-600 dark:text-zinc-300 mt-1">No fluff. One practical email every two weeks.</p>
-              <form className="mt-4 flex flex-col sm:flex-row gap-3" onSubmit={handleNewsletter} aria-label="Newsletter signup">
+              <form className="mt-4 flex flex-col sm:flex-row gap-3" onSubmit={(e)=>e.preventDefault()} aria-label="Newsletter signup">
                 <label className="sr-only" htmlFor="newsletter-email">Work email</label>
-                <input
-                  id="newsletter-email"
-                  name="newsletter"
-                  type="email"
-                  required
-                  placeholder="Work email"
-                  className="flex-1 rounded-xl border border-zinc-300 dark:border-zinc-700 bg-white dark:bg-zinc-950 px-4 py-3"
-                />
-                <button type="submit" className="rounded-xl px-5 py-3 font-semibold text-white bg-gradient-to-r from-emerald-600 to-teal-500">
-                  Subscribe
-                </button>
+                <input id="newsletter-email" type="email" placeholder="Work email" className="flex-1 rounded-xl border border-zinc-300 dark:border-zinc-700 bg-white dark:bg-zinc-950 px-4 py-3" />
+                <button className="rounded-xl px-5 py-3 font-semibold text-white bg-gradient-to-r from-emerald-600 to-teal-500">Subscribe</button>
               </form>
             </div>
           </div>
@@ -380,29 +681,19 @@ const quicklift = async (funnel) => {
         </footer>
       </section>
 
-      {/* Booking modal (portal, never blocks when closed) */}
-      <ModalLayer open={open} onClose={handleCloseModal}>
-        <div
-          className="w-full max-w-2xl rounded-2xl bg-white dark:bg-zinc-950 border border-zinc-200 dark:border-zinc-800 p-6 relative"
-          role="dialog"
-          aria-modal="true"
-          aria-labelledby="modal-title"
-        >
-          <button onClick={handleCloseModal} className="absolute top-3 right-3 rounded-full border border-zinc-300 dark:border-zinc-700 px-2 py-1 text-sm" aria-label="Close booking modal">Close</button>
-          <h3 id="modal-title" className={`text-xl font-semibold mb-2 ${brandHeading}`}>Book a 15-min fit check</h3>
-          <p className="text-sm text-zinc-600 dark:text-zinc-300 mb-4">Calendly loads after you click. This keeps the site fast.</p>
-          <div className="rounded-xl border border-dashed border-zinc-300 dark:border-zinc-700 p-6 text-center">
-            <button
-              onClick={handleLoadCalendly}
-              className="rounded-xl px-5 py-3 font-semibold text-white bg-gradient-to-r from-emerald-600 to-teal-500"
-              aria-label="Load Calendly widget"
-            >
-              {calendlyLoaded ? "Calendly Ready" : "Load Calendly"}
-            </button>
-            <p className="mt-2 text-xs text-zinc-500">(In production this injects the Calendly script and fires <code>booked_call</code> on confirmation.)</p>
+      {showBooking && (
+        <div className="fixed inset-0 z-40 flex items-center justify-center bg-black/50 p-4" role="dialog" aria-modal="true" aria-labelledby="modal-title">
+          <div className="w-full max-w-2xl rounded-2xl bg-white dark:bg-zinc-950 border border-zinc-200 dark:border-zinc-800 p-6 relative">
+            <button onClick={handleCloseModal} className="absolute top-3 right-3 rounded-full border border-zinc-300 dark:border-zinc-700 px-2 py-1 text-sm" aria-label="Close booking modal">Close</button>
+            <h3 id="modal-title" className={`text-xl font-semibold mb-2 ${brandHeading}`}>Book a 15-min fit check</h3>
+            <p className="text-sm text-zinc-600 dark:text-zinc-300 mb-4">Calendly loads after you click. This keeps the site fast.</p>
+            <div className="rounded-xl border border-dashed border-zinc-300 dark:border-zinc-700 p-6 text-center">
+              <button className="rounded-xl px-5 py-3 font-semibold text-white bg-gradient-to-r from-emerald-600 to-teal-500" aria-label="Load Calendly widget">Load Calendly</button>
+              <p className="mt-2 text-xs text-zinc-500">(In production this button injects the Calendly script and fires <code>booked_call</code> on confirmation.)</p>
+            </div>
           </div>
         </div>
-      </ModalLayer>
+      )}
 
       <style jsx>{`
         @keyframes fadeUp { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: translateY(0); } }
@@ -410,3 +701,52 @@ const quicklift = async (funnel) => {
     </main>
   );
 }
+
+
+
+
+
+
+
+==================== FILE: src\mdx-components.tsx ====================
+
+import type { MDXComponents } from "mdx/types";
+
+/**
+ * You can map MDX elements to styled React components here.
+ * Returning `components` unchanged is fine; presence of this file
+ * stabilizes Next’s MDX runtime.
+ */
+export function useMDXComponents(components: MDXComponents): MDXComponents {
+  return {
+    ...components,
+  };
+}
+
+
+
+==================== FILE: scripts\extract-home-bundle.mjs ====================
+
+import { promises as fs } from "fs";
+import path from "path";
+import zlib from "zlib";
+
+const root = ".next/static/chunks";
+
+async function run() {
+  const files = await fs.readdir(root);
+  const js = files.filter(f => f.endsWith(".js"));
+  if (!js.length) throw new Error("No chunks found; did you run `next build`?");
+  let largest = { name: "", size: 0 };
+  for (const f of js) {
+    const s = await fs.stat(path.join(root, f));
+    if (s.size > largest.size) largest = { name: f, size: s.size };
+  }
+  const buf = await fs.readFile(path.join(root, largest.name));
+  const gz = zlib.gzipSync(buf);
+  await fs.mkdir("public/.bundle", { recursive: true });
+  await fs.writeFile("public/.bundle/home.js.gz", gz);
+  console.log(`gz size: ${(gz.length/1024).toFixed(1)} KB (${largest.name})`);
+}
+run().catch((e) => { console.error(e); process.exit(1); });
+

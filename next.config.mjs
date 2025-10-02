@@ -1,23 +1,12 @@
 ﻿import createMDX from "@next/mdx";
-import withBundleAnalyzer from "@next/bundle-analyzer";
 
+/** @type {import("next").NextConfig} */
 const withMDX = createMDX({
   extension: /\.mdx?$/,
-  options: { providerImportSource: "@mdx-js/react" }
 });
 
-const withAnalyzer = withBundleAnalyzer({
-  enabled: process.env.ANALYZE === "true"
+export default withMDX({
+  // Treat MDX as a first-class page/route extension
+  pageExtensions: ["ts", "tsx", "mdx"],
+  experimental: { mdxRs: true } // keep this since you’re on Next 15.x
 });
-
-const nextConfig = {
-  reactStrictMode: true,
-  pageExtensions: ["tsx", "ts", "mdx"],
-  experimental: {
-    mdxRs: true,                  // RSC-friendly MDX
-    optimizePackageImports: ["react"]
-  },
-  images: { formats: ["image/avif", "image/webp"] }
-};
-
-export default withAnalyzer(withMDX(nextConfig));

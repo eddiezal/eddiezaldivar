@@ -1,7 +1,14 @@
-﻿:root{
+﻿@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* --------------------------
+   Design tokens / font vars
+---------------------------*/
+:root{
   --font-playfair: ui-serif, Georgia, "Times New Roman", serif;
-  --font-nunito: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  --font-nunito:   ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
 }
-/* simple, optimizer-friendly class names */
+/* optimizer-friendly class names */
 .font-playfair{ font-family: var(--font-playfair); }
 .font-nunito { font-family: var(--font-nunito);  }
